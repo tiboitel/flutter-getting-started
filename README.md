@@ -1,4 +1,4 @@
-# flutter_get_started
+# flutter-getting-started
 
 A new Flutter project.
 
