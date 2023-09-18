@@ -29,18 +29,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-
 class MyAppState extends ChangeNotifier {
-  var current = "Click the button to generate an Evil Lord Name !";
+  var current = 'Click the button to generate an Evil Lord Name !';
 
-  void generateEvilLordName() {
+  void generateEvilDemonLordName() {
     final name = WordPair.random().asLowerCase;
     final wordPair = generateWordPairs().take(1).single;
     final noun = wordPair.first; // Generate one random noun
     final adjective = wordPair.second; // Generate one random adjective
 
-    current = '$name The $adjective $noun';
+    current = '$name\r\nthe $adjective $noun';
     notifyListeners();
   }
 }
@@ -49,24 +47,57 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    var evilDemonLordName = appState.current;
+    final theme = Theme.of(context);
 
-    return Scaffold(
-      body: Container(
-        margin: EdgeInsets.only(top: 40.0), // Adjust the value as needed,
+  return Scaffold(
+    body: 
+      Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('A random Evil Demon Lord Name:'),
-            Text(appState.current)    ,
-
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text('Generate a random Evil Demon Lord Name !', style: theme.textTheme.headlineLarge!.copyWith(color: theme.colorScheme.primary)),
+            ),
+            // SizedBox(height: 20),
+            EvildDemonLordLabel(evilDemonLordName: evilDemonLordName),
+            SizedBox(height: 20),
             // Add a button
             ElevatedButton(
               onPressed: () {
-                appState.generateEvilLordName();
+                appState.generateEvilDemonLordName();
               },
               child: Text('Generate !'),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class EvildDemonLordLabel extends StatelessWidget {
+  const EvildDemonLordLabel({
+    super.key,
+    required this.evilDemonLordName,
+  });
+
+  final String evilDemonLordName;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final style = theme.textTheme.displaySmall!.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+
+    return Card(
+      color: theme.colorScheme.secondary,    // ← And also this.
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Text(evilDemonLordName, style: style, semanticsLabel: "${evilDemonLordName}",),
+
       ),
     );
   }
