@@ -96,7 +96,7 @@ class EvildDemonLordLabel extends StatelessWidget {
       color: theme.colorScheme.secondary,    // ← And also this.
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Text(evilDemonLordName, style: style, semanticsLabel: "${evilDemonLordName}",),
+        child: Text(evilDemonLordName, style: style, semanticsLabel: evilDemonLordName,),
 
       ),
     );
