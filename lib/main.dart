@@ -43,7 +43,7 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void generateEvilDemonLordName() {
+  void getEvilDemonLordName() {
     final name = WordPair.random().asLowerCase;
     final wordPair = generateWordPairs().take(1).single;
     final noun = wordPair.first; // Generate one random noun
@@ -54,60 +54,115 @@ class MyAppState extends ChangeNotifier {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+
+  var selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+        page = GeneratorPage();
+        break;
+      case 1:
+        page = Placeholder();
+        break;
+      default:
+        throw UnimplementedError('no widget for $selectedIndex');
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Scaffold(
+          body: Row(
+            children: [
+              SafeArea(
+                child: NavigationRail(
+                  extended: constraints.maxWidth >= 600,
+                  destinations: [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.home),
+                      label: Text('Home'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.favorite),
+                      label: Text('Favorites'),
+                    ),
+                  ],
+                  selectedIndex: selectedIndex,
+                  onDestinationSelected: (value) {
+                    setState(() {
+                      selectedIndex = value;
+                    });
+                  },
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  child: page,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    );
+  }
+}
+
+
+class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var evilDemonLordName = appState.current;
-    final theme = Theme.of(context);
+    var current = appState.current;
 
     IconData icon;
-    if (appState.favorites.contains(evilDemonLordName)) {
+    if (appState.favorites.contains(current)) {
       icon = Icons.favorite;
     } else {
       icon = Icons.favorite_border;
     }
 
-
-  return Scaffold(
-    body: 
-      Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text('Generate a random Evil Demon Lord Name !', style: theme.textTheme.headlineLarge!.copyWith(color: theme.colorScheme.primary)),
-            ),
-            // SizedBox(height: 20),
-            EvildDemonLordLabel(evilDemonLordName: evilDemonLordName),
-            SizedBox(height: 20),
-            // Add a button
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    appState.toggleFavorite();
-                  },
-                  icon: Icon(icon),
-                  label: Text('Like'),
-                ),
-                SizedBox(width: 15),
-                ElevatedButton(
-                  onPressed: () {
-                    appState.generateEvilDemonLordName();
-                  },
-                  child: Text('Generate'),
-                ),
-              ],
-            ),
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          EvildDemonLordLabel(evilDemonLordName: current),
+          SizedBox(height: 10),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  appState.toggleFavorite();
+                },
+                icon: Icon(icon),
+                label: Text('Like'),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  appState.getEvilDemonLordName();
+                },
+                child: Text('Next'),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 }
+
+// ...
 
 class EvildDemonLordLabel extends StatelessWidget {
   const EvildDemonLordLabel({
