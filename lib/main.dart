@@ -30,7 +30,18 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
-  var current = 'Click the button to generate an Evil Lord Name !';
+  var current = 'Click on Generate !';
+  var favorites = <String>[];
+
+  void toggleFavorite() {
+    if (favorites.contains(current)) {
+      favorites.remove(current);
+    } else {
+      favorites.add(current);
+    }
+
+    notifyListeners();
+  }
 
   void generateEvilDemonLordName() {
     final name = WordPair.random().asLowerCase;
@@ -50,6 +61,14 @@ class MyHomePage extends StatelessWidget {
     var evilDemonLordName = appState.current;
     final theme = Theme.of(context);
 
+    IconData icon;
+    if (appState.favorites.contains(evilDemonLordName)) {
+      icon = Icons.favorite;
+    } else {
+      icon = Icons.favorite_border;
+    }
+
+
   return Scaffold(
     body: 
       Center(
@@ -64,11 +83,24 @@ class MyHomePage extends StatelessWidget {
             EvildDemonLordLabel(evilDemonLordName: evilDemonLordName),
             SizedBox(height: 20),
             // Add a button
-            ElevatedButton(
-              onPressed: () {
-                appState.generateEvilDemonLordName();
-              },
-              child: Text('Generate !'),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    appState.toggleFavorite();
+                  },
+                  icon: Icon(icon),
+                  label: Text('Like'),
+                ),
+                SizedBox(width: 15),
+                ElevatedButton(
+                  onPressed: () {
+                    appState.generateEvilDemonLordName();
+                  },
+                  child: Text('Generate'),
+                ),
+              ],
             ),
           ],
         ),
