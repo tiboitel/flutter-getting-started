@@ -182,7 +182,7 @@ class EvildDemonLordLabel extends StatelessWidget {
     return Card(
       color: theme.colorScheme.secondary,    // ← And also this.
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(30.0),
         child: Text(evilDemonLordName, style: style, semanticsLabel: evilDemonLordName,),
 
       ),
